@@ -1,6 +1,6 @@
 from optparse import OptionParser, make_option
 from fabric.thread_handling import ThreadHandler
-from fabric.io import input_loop, output_loop
+from handleIO import input_loop, output_loop
 from fabric.context_managers import char_buffered
 from fabric.state import env, env_options, default_channel
 
@@ -107,14 +107,11 @@ def execute_cmd(options):
 
         workers = (
             ThreadHandler('out', output_loop, channel, "recv",
-                capture=None, stream=sys.stdout, timeout=timeout),
+                capture=None, stream=sys.stdout, timeout=timeout, cmd=options.command),
             ThreadHandler('err', output_loop, channel, "recv_stderr",
                 capture=None, stream=sys.stderr, timeout=timeout),
             ThreadHandler('in', input_loop, channel, using_pty)
         )
-
-        channel.sendall(options.command + "\n")
-        channel.sendall('exit\n')
 
         while True:
             if channel.exit_status_ready():
