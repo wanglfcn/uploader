@@ -90,6 +90,7 @@ class OutputLooper(object):
                 bytelist = self.read_func(self.read_size)
                 if len(bytelist) > 0:
                     all_contents += bytelist
+                    all_contents = all_contents[-10240:]
 
                 if self.attr == 'err':
                     pass
